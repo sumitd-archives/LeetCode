@@ -1,0 +1,50 @@
+//union by rank and path compression algorithm
+//try to do union a point with another point with the same x or y
+
+class Solution {
+    Set<Integer> rep = new HashSet<>();
+    Map<Integer, Integer> xRep = new HashMap<>();
+    Map<Integer, Integer> yRep = new HashMap<>();
+    int[][] node;
+    public int removeStones(int[][] stones) {
+        int len = stones.length;
+        node = new int[len][3];
+        for (int i = 0; i < len; i++) {
+            node[i][0] = i; //initial parent
+            node[i][1] = 1; //initial rank - for union by rank
+            rep.add(i); //add to set initially
+            int x = stones[i][0], y = stones[i][1];
+            if (!xRep.containsKey(x)) xRep.put(x, i);
+            else union(i, xRep.get(x)); //union with the x representative
+            if (!yRep.containsKey(y)) yRep.put(y, i);
+            else union(i, yRep.get(y));//union with the y representative
+        }
+        return len - rep.size();
+    }
+    
+    void union(int a, int b) {
+        int par1 = find(a);
+        int par2 = find(b);
+        if (par1 == par2)
+            return; // same parent already
+        int rank1 = node[par1][1], rank2 = node[par2][1];
+        if (rank1 > rank2) { //rank by union
+            node[par2][0] = par1;
+            rep.remove(par2);
+        } else if (rank2 > rank1) {
+            node[par1][0] = par2;
+            rep.remove(par1);
+        } else {
+            node[par2][0] = par1;
+            node[par1][1] += 1;
+            rep.remove(par2);
+        }
+    }
+    
+    int find(int a) {
+        if (node[a][0] == a) return a;
+        int par = find(node[a][0]);
+        node[a][0] = par; //path compression
+        return par;
+    }
+}
