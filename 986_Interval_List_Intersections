@@ -1,0 +1,36 @@
+//iterate through the list
+//start = Math.max(start1, start2) , end = Math.min(end1, end2)
+//increment i or j accordingly
+
+class Solution {
+    public int[][] intervalIntersection(int[][] A, int[][] B) {
+        int a = A.length, b = B.length;
+        if (a == 0 || b == 0) return new int[0][0];
+        ArrayList<int[]> res = new ArrayList<>();
+        int i = 0, j = 0;
+        while(i < a && j < b) {
+            int[] p1 = A[i];
+            int[] p2 = B[j];
+            int p1x = p1[0], p1y = p1[1];
+            int p2x = p2[0], p2y = p2[1];
+            if (p1y < p2x) {
+              i++;
+              continue;
+            } 
+            if (p2y < p1x) {
+              j++;
+              continue;
+            }
+            int start = Math.max(p1x, p2x);
+            int end = Math.min(p1y, p2y);
+            res.add(new int[] {start, end});
+            if (end == p1y) i++;
+            else j++;
+        }
+        int size = res.size();
+        int[][] ret = new int[size][];
+        for (i = 0; i < size; i++)
+            ret[i] = res.get(i);
+        return ret;
+    }
+}
