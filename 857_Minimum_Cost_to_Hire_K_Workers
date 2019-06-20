@@ -1,0 +1,27 @@
+//Sort according to (w/q) ratio
+//if a worker with the highest (w/q) is selected, total cost = (w/q) (q + q1 + q2 ...... k terms)
+//Therefore for an incoming (w/q) in the sorted order, remove the worker with the highest q in the group and calculate cost
+
+
+class Solution {
+    public double mincostToHireWorkers(int[] quality, int[] wage, int k) {
+        int n = quality.length;
+        double res = Double.MAX_VALUE;
+        PriorityQueue<Double> pq = new PriorityQueue<>((x, y) -> Double.compare(y,x));
+        double[][] workers = new double[n][2];
+        for (int i = 0; i < n; i++) {
+            workers[i] = new double[]{(double)wage[i]/quality[i], quality[i]};
+        }
+        double top, qual_tot = 0, cost;
+        Arrays.sort(workers, (a,b)-> Double.compare(a[0], b[0]));
+        for (double[] worker : workers) {
+            qual_tot += worker[1];
+             pq.offer(worker[1]);
+             if (pq.size() < k) continue;
+              cost = qual_tot*worker[0];
+              res = Math.min(res, cost);
+              qual_tot -= pq.poll();
+        }
+        return res;
+    }
+}
