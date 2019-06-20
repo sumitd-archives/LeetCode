@@ -1,0 +1,40 @@
+//cnt in the merge process of merge sort
+
+
+class Solution {
+    int[] helper;
+    public int reversePairs(int[] nums) {
+        this.helper = new int[nums.length];
+        return mergeSort(nums, 0, nums.length-1);
+    }
+    private int mergeSort(int[] nums, int s, int e){
+        if(s>=e) return 0; 
+        int mid = s + (e-s)/2; 
+        int cnt = mergeSort(nums, s, mid) + mergeSort(nums, mid+1, e); 
+        int i = s, j = mid + 1;
+        while(i <= mid && j <= e) {
+            if (nums[i]/2.0 <= nums[j]) i++;
+            else {
+                cnt += (mid - i + 1);
+                j++;
+            }
+        }
+        //Arrays.sort(nums, s, e+1);
+        i = s;
+        j = mid + 1;
+        int start = i;
+        while (i <= mid && j <= e) {
+            if (nums[i] <= nums[j]) {
+                helper[start++] = nums[i++]; 
+            }else {
+                helper[start++] = nums[j++]; 
+            }
+        }
+        while(i <= mid) helper[start++] = nums[i++];
+        while(j <= e) helper[start++] = nums[j++];
+        for (i = s; i <= e; i++) 
+            nums[i] = helper[i];
+        
+        return cnt; 
+    }
+}
