@@ -1,0 +1,37 @@
+//find min = min_weight and max = sum_of_weights
+//Do binary search b/w min and max for the min weight
+
+
+class Solution {
+    public int shipWithinDays(int[] weights, int D) {
+        int min = weights[0], max = weights[0];
+        for (int weight : weights) {
+            min = Math.max(min, weight);
+            max += weight;
+        }
+        return findCapacity(weights, min, max, D);
+    }
+    
+    private int findCapacity(int[] weights, int min, int max, int d) {
+        //System.out.println("min = " + min +" , max = " + max);
+        if (min == max) return min;
+        int mid = min + (max - min)/2;
+        int days = findMinDays(weights, mid);
+        if (days > d) 
+            return findCapacity(weights, mid + 1, max, d);
+        return findCapacity(weights, min, mid, d);
+    }
+    
+    private int findMinDays(int[] weights, int capacity) {
+        int cap = capacity, days = 1, i = 0;
+        while(i < weights.length) {
+            if (cap <= 0) {
+                days += 1;
+                cap = capacity;
+            }
+            cap -= weights[i];
+            if (cap >= 0) i++;
+        }
+        return days;
+    }
+}
