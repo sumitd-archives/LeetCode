@@ -1,0 +1,24 @@
+//Sort in ascending in x dimension and descending order in y (if x1 = x2)
+//This is reduced to LIS in y dimension
+//need to sort in descending order in y dimension such that (4,5 comes before 4,4) 4,5 cannot contain 4,4 
+//to solve LIS , maintain dp such that 10,9,8,11 is stored as 8, 11  (only in increasing order) . LIS is 2
+
+class Solution {
+    public int maxEnvelopes(int[][] envelopes) {
+        if(envelopes == null || envelopes.length == 0 
+           || envelopes[0] == null || envelopes[0].length != 2)
+            return 0;
+        Arrays.sort(envelopes, (a, b) -> ((a[0] == b[0]) ? (b[1] - a[1]) : (a[0] - b[0])));
+        int dp[] = new int[envelopes.length];
+        int len = 0;
+        for(int[] envelope : envelopes){
+            int index = Arrays.binarySearch(dp, 0, len, envelope[1]);
+            if(index < 0)
+                index = -(index + 1);
+            dp[index] = envelope[1];
+            if(index == len)
+                len++;
+        }
+        return len;
+    }
+}
