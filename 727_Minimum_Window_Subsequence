@@ -1,0 +1,65 @@
+My Solution
+//dp[i][j] = length of substring if possible. if dp[i - 1][j - 1] > 0, then substring is possible
+
+class Solution {
+    public String minWindow(String S, String T) {
+        int slen = S.length(), tlen = T.length();
+        String res = "";
+        if (slen < tlen) return res;
+        int[][] dp = new int[tlen][slen];
+        for (int i = 0; i < tlen; i++) {
+            for (int j = i; j < slen; j++) {
+                if (T.charAt(i) == S.charAt(j)) {
+                    if (i == 0) dp[i][j] = 1;
+                    else if (dp[i - 1][j - 1] > 0) dp[i][j] = dp[i - 1][j - 1] + 1;
+                    if ((i == tlen - 1) && dp[i][j] > 0 && (dp[i][j] < res.length() || res.length() == 0))
+                        res = S.substring(j + 1 - dp[i][j], j + 1);
+                    //System.out.println("i = " + i +" , j = " + j +" , dp[i][j] = " + dp[i][j]);
+                } else if (j > 0 && dp[i][j - 1] > 0)
+                    dp[i][j] = dp[i][j - 1] + 1;
+            }    
+        }
+        return res;
+    }
+}
+
+
+
+Solution 2
+
+//dp[i][j] , starting point of substring (i in T and j in S)
+//dp[i][j] borrows starting position from (i - 1, j - 1)  or (i, j - 1)
+//dp[0][j] = j + 1 and not j. Reason being it won't be possible to distinguish whether dp[i][j] = 0 really means that the starting position is 0 or that substring is not possible
+
+
+class Solution {
+    public String minWindow(String S, String T) {
+        int m = T.length(), n = S.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int j = 0; j <= n; j++) {
+            dp[0][j] = j + 1;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = i; j <= n; j++) {
+                if (T.charAt(i - 1) == S.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = dp[i][j - 1];
+                }
+            //System.out.println(" i = " + i + " , j = " + j + ", dp[i][j] = " + dp[i][j]);    
+            }
+        }
+
+        int start = 0, len = n + 1;
+        for (int j = m; j <= n; j++) {
+            if (dp[m][j] != 0) {
+                int curlen = j + 1 - dp[m][j];
+                if (curlen < len) {
+                    start = dp[m][j] - 1;
+                    len = curlen;
+                }
+            }
+        }
+        return len == n + 1 ? "" : S.substring(start, start + len);
+    }
+}
