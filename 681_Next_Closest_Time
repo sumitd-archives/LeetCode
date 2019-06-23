@@ -1,0 +1,48 @@
+//Start with last index : find next larger to last index . If not null, no need to check any further, else set last index to min
+//Find next greater to second last index. If <= 5 (since max minute  = 59), no need to check further, else set second last ind to min
+//Then next greater to third last.  Check if HOUR(first 2 index) < 23. If not set second last to min
+//Check next greater to the first index. If <= 2, convert to string, else set first ind to min and convert to string
+class Solution {
+    public String nextClosestTime(String time) {
+        TreeSet<Integer> set = new TreeSet<>();
+        int a = Character.getNumericValue(time.charAt(0));
+        int b = Character.getNumericValue(time.charAt(1));
+        int c = Character.getNumericValue(time.charAt(3));
+        int d = Character.getNumericValue(time.charAt(4));
+        int min = Math.min(Math.min(a, b) , Math.min(c,d));
+        set.add(a);
+        set.add(b);
+        set.add(c);
+        set.add(d);
+        Integer next;
+        next = set.ceiling(d + 1);
+        //System.out.println("next d = " + next);
+        if (next != null) return toString(a, b, c, next);
+        //else
+        d = min;
+        next = set.ceiling(c + 1);
+        //System.out.println("next c = " + next);
+        if (next != null && next <= 5) return toString(a, b, next, d);
+        //else
+        c = min;
+        next = set.ceiling(b + 1);
+        //System.out.println("next b = " + next);
+        if (next != null) {
+            //Hour should be <= 23
+            int hour = Integer.parseInt(Integer.toString(a) + Integer.toString(next));
+            if (hour <= 23) return toString(a, next, c, d);
+        }
+        //else
+        b = min;
+        next = set.ceiling(a + 1);
+        //System.out.println("next a = " + next);
+        if (next != null && next <= 2) return toString(next, b, c, d);
+        //else
+        a = min;
+        return toString(a, b, c, d);
+    }
+    
+    private String toString(int a, int b, int c, int d) {
+        return Integer.toString(a) + Integer.toString(b) + ":" + Integer.toString(c) + Integer.toString(d); 
+    }
+}
