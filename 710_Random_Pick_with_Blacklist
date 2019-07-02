@@ -1,0 +1,37 @@
+//1 (2) (3) 4 5 6 7 (8) (9) 10
+// In above 2, 3, 8, 9 are blacklist
+//so select random number from 1 to 6   (10 - 4)
+// map    2<->7 , 3<->10
+//If 2 comes, return 7 and for 3 return 10
+
+class Solution {
+    int M;
+    Random r;
+    Map<Integer, Integer> map;
+
+    public Solution(int N, int[] blacklist) {
+        map = new HashMap();
+        for (int b : blacklist) // O(B)
+            map.put(b, -1);
+        M = N - map.size();
+        
+        int i = M;
+        for (int b : blacklist) { // O(B)
+            if (b < M) { // re-mapping
+                while (map.containsKey(i))
+                    i++;
+                map.put(b, i);
+                i++;
+            }
+        }
+        
+        r = new Random();
+    }
+    
+    public int pick() {
+        int p = r.nextInt(M);
+        if (map.containsKey(p))
+            return map.get(p);
+        return p;
+    }
+}
