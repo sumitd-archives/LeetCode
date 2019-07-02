@@ -1,0 +1,36 @@
+//Simple reservoir sampling application
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+
+    /** @param head The linked list's head.
+        Note that the head is guaranteed to be not null, so it contains at least one node. */
+    Random rnd;
+    ListNode head;
+    public Solution(ListNode head) {
+        this.head = head;
+        rnd = new Random(); 
+    }
+    
+    /** Returns a random node's value. */
+    public int getRandom() {
+        int res = head.val;
+        ListNode node = head.next;
+        int i = 2;
+        while(node != null){
+            int j = rnd.nextInt(i);
+            if(j==0)
+                res = node.val;
+            i++;
+            node = node.next;
+        }
+        return res;
+    }
+}
