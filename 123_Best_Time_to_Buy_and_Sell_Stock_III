@@ -1,0 +1,22 @@
+//This is a tricky problem
+//lbp1 and mp1 is straighforward
+//lbp2 will change only if net loss (second price - prev profit) is less than prev val
+//lbp1 and mp1 may change but lbp2 will keep locked onto the prev min value
+//mp2 will give overall max profit. Even though lbp1 and mp1 may have changed in the second //valley(local min, local max), lbp2 will hold onto the prev maxprofit1 val.
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int maxProfit1 = 0; 
+        int maxProfit2 = 0; 
+        int lowestBuyPrice1 = Integer.MAX_VALUE;
+        int lowestBuyPrice2 = Integer.MAX_VALUE;
+
+        for(int p:prices){
+            maxProfit2 = Math.max(maxProfit2, p-lowestBuyPrice2);
+            lowestBuyPrice2 = Math.min(lowestBuyPrice2, p-maxProfit1);
+            maxProfit1 = Math.max(maxProfit1, p-lowestBuyPrice1);
+            lowestBuyPrice1 = Math.min(lowestBuyPrice1, p);
+        }
+        return maxProfit2;
+    }
+}
